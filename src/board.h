@@ -30,8 +30,8 @@ public:
    */
   Piece *GetPiece(int row, int col);
   Spot *GetSpot(int row, int col);
-  void MovePiece(int fromRow, int fromCol, int toRow, int toCol);
-  void MovePiece(Move move);
+  bool MovePiece(int fromRow, int fromCol, int toRow, int toCol);
+  bool MovePiece(Move move);
   std::string ToString();
   Spot *GetWhiteKingSpot() { return whiteKingSpot; }
   Spot *GetBlackKingSpot() { return blackKingSpot; }

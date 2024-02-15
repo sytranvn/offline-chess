@@ -1,7 +1,7 @@
 #include "move.h"
 
-Move::Move(int fromX, int fromY, int toX, int toY)
-    : fromRow(fromX), fromCol(fromY), toX(toX), toY(toY){};
+Move::Move(int fromRow, int fromCol, int toRow, int toCol)
+    : fromRow(fromRow), fromCol(fromCol), toRow(toRow), toCol(toCol){};
 
 Move::Move(char move[4]) {
   int y = move[0] - 'a';

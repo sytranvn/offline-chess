@@ -51,21 +51,22 @@ Piece *Board::GetPiece(int row, int col) {
 
 Spot *Board::GetSpot(int row, int col) { return spots[row][col]; };
 
-void Board::MovePiece(int fromRow, int fromCol, int toRow, int toCol) {
+bool Board::MovePiece(int fromRow, int fromCol, int toRow, int toCol) {
   auto from = spots[fromRow][fromCol];
   auto to = spots[toRow][toCol];
   if (from->GetPiece() == nullptr) {
-    throw std::runtime_error("No piece at source");
+    return false;
   }
   auto p = from->GetPiece();
   if (p->CanMoveTo(from, to)) {
     to->SetPiece(p);
     from->SetPiece(nullptr);
   } else {
-    throw std::runtime_error("Invalid move");
+    return false;
   }
+  return true;
 };
 
-void Board::MovePiece(struct Move move) {
-  MovePiece(move.fromRow, move.fromCol, move.toX, move.toY);
+bool Board::MovePiece(struct Move move) {
+  return MovePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
 }

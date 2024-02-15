@@ -26,18 +26,23 @@ void Game::Back() {
 bool Game::GetIsBlackTurn() { return currentPlayer == black; }
 bool Game::GetIsWhiteTurn() { return currentPlayer == white; }
 
-void Game::MakeMove(Move move) {
+bool Game::MakeMove(Move move) {
   Piece *p = board->GetPiece(move.fromRow, move.fromCol);
   if (p == nullptr) {
-    throw std::runtime_error("No piece at source");
+    return false;
+    // throw std::runtime_error("No piece at source");
   }
   if (p->IsWhite() != GetIsWhiteTurn()) {
-    throw std::runtime_error("Not your turn");
+    return false;
+    // throw std::runtime_error("Not your turn");
   }
-  board->MovePiece(move);
+  if (!board->MovePiece(move)) {
+    return false;
+  }
   moves.push_back(move);
   std::cout << "Move " << moves.size() << " " << p->GetSymbol() << " "
             << (char)(move.fromCol + 'A') << move.fromRow + 1 << " to "
-            << (char)(move.toY + 'A') << move.toX + 1 << std::endl;
+            << (char)(move.toCol + 'A') << move.toRow + 1 << std::endl;
   currentPlayer = GetIsWhiteTurn() ? black : white;
+  return true;
 }

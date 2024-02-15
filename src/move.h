@@ -4,8 +4,8 @@
 struct Move {
   int fromRow;
   int fromCol;
-  int toX;
-  int toY;
+  int toRow;
+  int toCol;
 
   Move(int fromX, int fromY, int toX, int toY);
   Move(char move[4]);

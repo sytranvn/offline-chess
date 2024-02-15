@@ -25,7 +25,7 @@ public:
   void Back();
   bool GetIsBlackTurn();
   bool GetIsWhiteTurn();
-  void MakeMove(Move move);
+  bool MakeMove(Move move);
 };
 
 #endif // GAME_H

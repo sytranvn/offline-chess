@@ -2,6 +2,7 @@
 #include "game.h"
 #include "raylib.h"
 #include "timer.h"
+#include <exception>
 #include <fstream>
 #include <vector>
 
@@ -93,14 +94,14 @@ void UpdateDrawFrame(void) {
         if (to == selectedSpot) {
           selectedSpot = nullptr;
         } else if (selectedSpot->GetPiece() != nullptr) {
-          Move move = {selectedSpot->GetRow(), selectedSpot->GetCol(), row,
-                       col};
-          try {
-            game->MakeMove(move);
+          Move *move = new Move{selectedSpot->GetRow(), selectedSpot->GetCol(),
+                                row, col};
+          if (game->MakeMove(*move)) {
             std::cout << board->ToString();
-            currentMove = &move;
-          } catch (std::exception &e) {
-            std::cerr << e.what() << std::endl;
+            currentMove = move;
+          } else {
+            if (currentMove != nullptr)
+              delete currentMove;
             currentMove = nullptr;
           }
         }
@@ -137,9 +138,9 @@ void DrawBoardAndPieces(Board *board) {
     for (int j = 0; j < board->size; ++j) {
       auto spot = board->GetSpot(i, j);
       Color color = spot->IsWhite() ? LIGHTGRAY : BROWN;
-      if (currentMove) {
+      if (currentMove != nullptr) {
         bool moved = i == currentMove->fromRow && j == currentMove->fromCol;
-        bool filled = i == currentMove->toX && j == currentMove->toY;
+        bool filled = i == currentMove->toRow && j == currentMove->toCol;
         if (moved || filled) {
           // color.r &= 0xff;
           color.r ^= 0x33;
