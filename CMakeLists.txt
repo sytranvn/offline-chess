@@ -32,6 +32,7 @@ add_executable(main src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} raylib chess_lib)
 target_link_libraries(main raylib chess_lib)
+file(COPY resources DESTINATION ${PROJECT_BINARY_DIR})
 
 # Web Configurations
 if(${PLATFORM} STREQUAL "Web")
