@@ -18,6 +18,7 @@ if(NOT raylib_FOUND) # If there's none, fetch and build raylib
     raylib
     DOWNLOAD_EXTRACT_TIMESTAMP OFF
     URL https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
+    URL_HASH SHA256=98f049b9ea2a9c40a14e4e543eeea1a7ec3090ebdcd329c4ca2cf98bc9793482
   )
   FetchContent_GetProperties(raylib)
   if(NOT raylib_POPULATED) # Have we downloaded raylib yet?
@@ -39,6 +40,7 @@ if(NOT nng_FOUND) # If there's none, fetch and build raylib
     nng
     DOWNLOAD_EXTRACT_TIMESTAMP OFF
     URL https://github.com/nanomsg/nng/archive/refs/tags/v${NNG_VERSION}.tar.gz
+    URL_HASH SHA256=40e6af7bdd5d02ee98ba8fe5fd5c149ce3e5a555f202cdc837e3ead2d7cc7534
   )
   FetchContent_GetProperties(nng)
   if(NOT nng_POPULATED) # Have we downloaded raylib yet?
