@@ -32,13 +32,16 @@ int main() {
   InitWindow(screenWidth + padding, screenHeight + padding, "Chess offline");
   // Load resources
   piecesTexture = LoadTexture("resources/images/pieces.png");
-
+  
 #if defined(PLATFORM_WEB)
   emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
 #else
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
   //--------------------------------------------------------------------------------------
-
+  
+  ChessBoard board;
+  auto v = board.printBitboard(board.getPawns(ChessBoard::White));
+  TraceLog(LOG_INFO, "Pawns:\n%s", v.c_str());
   // Main game loop
   while (!WindowShouldClose()) // Detect window close button or ESC key
   {

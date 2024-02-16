@@ -1,13 +1,16 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <cstdint>
+#include <cstddef>
+#include <stdio.h>
+#include <string>
 // https://www.chessprogramming.org/Bitboards
 
-typedef uint64_t Bitboard;
+typedef unsigned long long Bitboard;
+#define C64(constantU64) constantU64##ULL
 
 class ChessBoard {
-  Bitboard pieceBb[8];
+  Bitboard pieceBb[8] = {0};
 
 public:
   enum enumPiece {
@@ -57,35 +60,33 @@ public:
     SW = S + W
   };
 
-  PieceCode pieceCode(PieceType pt) const { return (PieceCode)(pt / 2); };
-  PieceType pieceColor(PieceType pt) const { return (PieceType)(pt % 2); };
+  PieceCode pieceCode(PieceType pt) const;
+  PieceType pieceColor(PieceType pt) const;
 
-  Bitboard getPieceSet(PieceType pt) const {
-    return pieceBb[pieceCode(pt)] & pieceBb[pieceColor(pt)];
-  };
-  Bitboard getPawns(ColorType ct) const {
-    return pieceBb[nPawn] & pieceBb[ct];
-  };
-  Bitboard getKnights(ColorType ct) const {
-    return pieceBb[nKnight] & pieceBb[ct];
-  };
-  Bitboard getBishops(ColorType ct) const {
-    return pieceBb[nBishop] & pieceBb[ct];
-  };
-  Bitboard getRooks(ColorType ct) const {
-    return pieceBb[nRook] & pieceBb[ct];
-  };
-  Bitboard getQueens(ColorType ct) const {
-    return pieceBb[nQeen] & pieceBb[ct];
-  };
-  Bitboard getKings(ColorType ct) const {
-    return pieceBb[nKing] & pieceBb[ct];
-  };
-  Bitboard getOccupied(ColorType ct) const { return pieceBb[ct]; };
-  Bitboard getOccupied() const { return pieceBb[nWhite] | pieceBb[nBlack]; };
-  Bitboard getEmpty() const {
-    return ~getOccupied(White) & ~getOccupied(Black);
-  };
+  Bitboard getPieceSet(PieceType pt) const;
+  Bitboard getPawns(ColorType ct) const;
+  Bitboard getKnights(ColorType ct) const;
+  Bitboard getBishops(ColorType ct) const;
+  Bitboard getRooks(ColorType ct) const;
+  Bitboard getQueens(ColorType ct) const;
+  Bitboard getKings(ColorType ct) const;
+  Bitboard getOccupied(ColorType ct) const;
+  Bitboard getOccupied() const;
+  Bitboard getEmpty() const;
+  size_t popCount(Bitboard b) const;
+  /**
+   * @brief lsb least significant bit
+   * @param b bitboard
+   * @return index of the least significant bit
+   */
+  size_t lsb(Bitboard b) const;
+  /**
+   * @brief msb most significant bit
+   * @param b bitboard
+   * @return index of the most significant bit
+   */
+  size_t msb(Bitboard b) const;
+  std::string printBitboard(Bitboard b) const;
 };
 
 #endif // BOARD_H
