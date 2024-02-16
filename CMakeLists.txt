@@ -3,6 +3,11 @@ project(chess)
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Dependencies
 set(RAYLIB_VERSION 5.0)
@@ -25,13 +30,29 @@ if(NOT raylib_FOUND) # If there's none, fetch and build raylib
   endif()
 endif()
 
+# Dependencies
+set(NNG_VERSION 1.7.2)
+find_package(nng ${NNG_VERSION} QUIET) # QUIET or REQUIRED
+if(NOT nng_FOUND) # If there's none, fetch and build raylib
+  include(FetchContent)
+  FetchContent_Declare(
+    nng
+    DOWNLOAD_EXTRACT_TIMESTAMP OFF
+    URL https://github.com/nanomsg/nng/archive/refs/tags/v${NNG_VERSION}.tar.gz
+  )
+  FetchContent_GetProperties(nng)
+  if(NOT nng_POPULATED) # Have we downloaded raylib yet?
+    set(NNG_TESTS NO)
+    FetchContent_Populate(nng)
+    add_subdirectory(${nng_SOURCE_DIR} ${nng_BINARY_DIR})
+  endif()
+endif()
+
 add_subdirectory(src)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-add_executable(main src/main.cpp)
+target_link_libraries(${PROJECT_NAME} raylib nng chess_lib)
 
-target_link_libraries(${PROJECT_NAME} raylib chess_lib)
-target_link_libraries(main raylib chess_lib)
 file(COPY resources DESTINATION ${PROJECT_BINARY_DIR})
 
 # Web Configurations

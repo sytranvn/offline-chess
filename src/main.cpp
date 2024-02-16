@@ -1,10 +1,8 @@
 #include "board.h"
 #include "game.h"
+#include "nng/nng.h"
 #include "raylib.h"
 #include "timer.h"
-#include <exception>
-#include <fstream>
-#include <vector>
 
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
@@ -17,7 +15,6 @@ int screenWidth = 800;
 int screenHeight = 800;
 int padding = 40;
 Move *currentMove = nullptr;
-std::vector<Move> moves;
 
 Game *game = new Game();
 Board *board = game->GetBoard();
@@ -32,19 +29,14 @@ Texture2D piecesTexture = {0};
 void UpdateDrawFrame(void); // Update and Draw one frame
 //----------------------------------------------------------------------------------
 // Game functions
-bool MovesEnded();
-void GetMoves(std::vector<Move> &moves);
 void DrawBoardAndPieces(Board *board);
-void Replay(const std::vector<Move> &moves);
 //----------------------------------------------------------------------------------
 // Main Entry Point
 //----------------------------------------------------------------------------------
 int main() {
   // Initialization
   //--------------------------------------------------------------------------------------
-  GetMoves(moves);
   InitWindow(screenWidth + padding, screenHeight + padding, "Chess offline");
-  std::cout << "Moves size: " << moves.size() << std::endl;
   // Load resources
   piecesTexture = LoadTexture("resources/images/pieces.png");
 
@@ -80,7 +72,6 @@ void UpdateDrawFrame(void) {
   //
   if (!game->IsGameOver()) {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      std::cout << "Mouse button pressed" << std::endl;
       Vector2 spotPosition = GetMousePosition();
       if (selectedSpot == nullptr) {
         int col = ((int)spotPosition.x - padding) / (screenWidth / 8);
@@ -97,7 +88,7 @@ void UpdateDrawFrame(void) {
           Move *move = new Move{selectedSpot->GetRow(), selectedSpot->GetCol(),
                                 row, col};
           if (game->MakeMove(*move)) {
-            std::cout << board->ToString();
+            TraceLog(LOG_INFO, board->ToString().c_str());
             currentMove = move;
           } else {
             if (currentMove != nullptr)
@@ -112,23 +103,6 @@ void UpdateDrawFrame(void) {
   DrawBoardAndPieces(board);
   EndDrawing();
 }
-
-// bool MovesEnded() { return currentMove == 10; }
-
-void GetMoves(std::vector<Move> &moves) {
-  std::ifstream file("resources/games/moves.txt");
-  if (!file)
-    std::cout << "Error opening file resources/games/moves.txt" << std::endl;
-
-  int fromX, fromY, toX, toY;
-  int n;
-  file >> n;
-  while (n--) {
-    file >> fromX >> fromY >> toX >> toY;
-    std::cout << fromX << fromY << toX << toY << std::endl;
-    moves.push_back({fromX, fromY, toX, toY});
-  }
-};
 
 void DrawBoardAndPieces(Board *board) {
   int spotWidth = screenWidth / 8;
@@ -209,19 +183,3 @@ void DrawBoardAndPieces(Board *board) {
   }
 }
 
-// void Replay(const std::vector<Move> &moves) {
-//   if (!TimerIsDone(&timer)) {
-//     TimerUpdate(&timer);
-//   } else {
-//     auto move = moves[currentMove];
-//     try {
-//       game->MakeMove(move);
-//       std::cout << board->ToString();
-//     } catch (std::exception &e) {
-//       std::cerr << e.what() << std::endl;
-//     }
-//     if (moves.size() > currentMove + 1)
-//       currentMove++;
-//     TimerStart(&timer, 2);
-//   }
-// }
