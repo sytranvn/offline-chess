@@ -1,49 +1,80 @@
 #include "board.h"
+#include <iostream>
+#include <string>
 
-ChessBoard::PieceCode ChessBoard::pieceCode(PieceType pt) const {
-  return (PieceCode)(pt / 2);
-};
-ChessBoard::PieceType ChessBoard::pieceColor(PieceType pt) const {
-  return (PieceType)(pt % 2);
+void ChessBoard::init(Bitboard in[8]) {
+  for (int i = 0; i < 8; i++) {
+    pieceBb[i] = in[i];
+  }
+}
+ChessBoard::ChessBoard(Bitboard in[8]) { init(in); };
+
+ChessBoard::ChessBoard() {
+
+  Bitboard p1 = CBB(1);
+  Bitboard in[8] = {
+      // white
+      rank1 | rank2,
+      // black
+      rank8 | rank7,
+      // pawn
+      rank2 | rank7,
+      // knight
+      (rank1 | rank8) & (bFile | gFile),
+      // bishop
+      (rank1 | rank8) & (cFile | fFile),
+      // rook
+      (rank1 | rank8) & (aFile | hFile),
+      // queen
+      (rank1 | rank8) & dFile,
+      // king
+      (rank1 | rank8) & eFile,
+  };
+  init(in);
 };
 
-Bitboard ChessBoard::getPieceSet(PieceType pt) const {
-  return pieceBb[pieceCode(pt)] & pieceBb[pieceColor(pt)];
+ChessBoard::PieceType ChessBoard::pieceType(ChessBoard ::PieceCode pt) {
+  return (PieceType)(pt / 2);
 };
-Bitboard ChessBoard::getPawns(ColorType ct) const {
+ChessBoard::ColorType ChessBoard::pieceColor(ChessBoard::PieceCode pt) {
+  return (ColorType)(pt % 2);
+};
+
+Bitboard ChessBoard::getPieceSet(ChessBoard::PieceCode pt) {
+  return pieceBb[pieceType(pt)] & pieceBb[pieceColor(pt)];
+};
+Bitboard ChessBoard::getPawns(ColorType ct) {
   return pieceBb[nPawn] & pieceBb[ct];
 };
-Bitboard ChessBoard::getKnights(ColorType ct) const {
+Bitboard ChessBoard::getKnights(ColorType ct) {
   return pieceBb[nKnight] & pieceBb[ct];
 };
-Bitboard ChessBoard::getBishops(ColorType ct) const {
+Bitboard ChessBoard::getBishops(ColorType ct) {
   return pieceBb[nBishop] & pieceBb[ct];
 };
-Bitboard ChessBoard::getRooks(ColorType ct) const {
+Bitboard ChessBoard::getRooks(ColorType ct) {
   return pieceBb[nRook] & pieceBb[ct];
 };
-Bitboard ChessBoard::getQueens(ColorType ct) const {
+Bitboard ChessBoard::getQueens(ColorType ct) {
   return pieceBb[nQeen] & pieceBb[ct];
 };
-Bitboard ChessBoard::getKings(ColorType ct) const {
+Bitboard ChessBoard::getKings(ColorType ct) {
   return pieceBb[nKing] & pieceBb[ct];
 };
-Bitboard ChessBoard::getOccupied(ColorType ct) const { return pieceBb[ct]; };
-Bitboard ChessBoard::getOccupied() const {
+Bitboard ChessBoard::getOccupied(ColorType ct) { return pieceBb[ct]; };
+Bitboard ChessBoard::getOccupied() {
   return pieceBb[nWhite] | pieceBb[nBlack];
 };
-Bitboard ChessBoard::getEmpty() const {
+Bitboard ChessBoard::getEmpty() {
   return ~getOccupied(White) & ~getOccupied(Black);
 };
-size_t ChessBoard::popCount(Bitboard b) const {
-  return __builtin_popcountll(b);
-};
+size_t ChessBoard::popCount(Bitboard b) { return __builtin_popcountll(b); };
 /**
  * @brief lsb least significant bit
  * @param b bitboard
  * @return index of the least significant bit
  */
-size_t ChessBoard::lsb(Bitboard b) const {
+size_t ChessBoard::lsb(Bitboard b) {
   if (b)
     return (size_t)__builtin_ctzll(b);
   return 64;
@@ -53,20 +84,114 @@ size_t ChessBoard::lsb(Bitboard b) const {
  * @param b bitboard
  * @return index of the most significant bit
  */
-size_t ChessBoard::msb(Bitboard b) const {
+size_t ChessBoard::msb(Bitboard b) {
   if (b)
     return (size_t)__builtin_clzll(b);
   return 64;
 };
 
-std::string ChessBoard::printBitboard(Bitboard b) const {
+std::string ChessBoard::printBitboard(Bitboard b) {
   std::string buffer(64 + 7, '.');
   int j = 0;
   for (int i = 0; i < 64; i++, j++) {
     if (i && i % 8 == 0)
       buffer[j++] = '\n';
-    if (b & (C64(1) << (63 - i)))
+    if (b & (CBB(1) << (63 - i))) // reverse order so white side is at bottom
       buffer[j] = '1';
   }
   return buffer;
+};
+
+void ChessBoard::fillChar(Bitboard b, char ch, std::string &out) {
+  for (int i = 0; i < 64; i++) {
+    if (b & (CBB(1) << (63 - i))) // reverse order so white side is at bottom
+      out[i / 8 * 9 + i % 8] = ch;
+  }
+}
+
+std::string ChessBoard::toString() {
+  Bitboard b = CBB(0);
+  for (int i = 0; i < 8; i++) {
+    b |= pieceBb[i];
+  }
+  return printBitboard(b);
+}
+
+std::string ChessBoard::fillChar() {
+  std::string out(64 + 8, ' ');
+  fillChar(darkSqs, '0', out);
+  fillChar(pieceBb[nPawn] & pieceBb[nWhite], 'P', out);
+  fillChar(pieceBb[nRook] & pieceBb[nWhite], 'R', out);
+  fillChar(pieceBb[nKnight] & pieceBb[nWhite], 'N', out);
+  fillChar(pieceBb[nBishop] & pieceBb[nWhite], 'B', out);
+  fillChar(pieceBb[nQeen] & pieceBb[nWhite], 'Q', out);
+  fillChar(pieceBb[nKing] & pieceBb[nWhite], 'K', out);
+
+  fillChar(pieceBb[nPawn] & pieceBb[nBlack], 'p', out);
+  fillChar(pieceBb[nRook] & pieceBb[nBlack], 'r', out);
+  fillChar(pieceBb[nKnight] & pieceBb[nBlack], 'n', out);
+  fillChar(pieceBb[nBishop] & pieceBb[nBlack], 'b', out);
+  fillChar(pieceBb[nQeen] & pieceBb[nBlack], 'q', out);
+  fillChar(pieceBb[nKing] & pieceBb[nBlack], 'k', out);
+  for (int i = 8; i < 64 + 8; i += 9)
+    out[i] = '\n';
+  return out;
+}
+
+Bitboard ChessBoard::nortFill(Bitboard gen) {
+  gen |= (gen << 8);
+  gen |= (gen << 16);
+  gen |= (gen << 32);
+  return gen;
+};
+Bitboard ChessBoard::soutFill(Bitboard gen) {
+  gen |= (gen >> 8);
+  gen |= (gen >> 16);
+  gen |= (gen >> 32);
+  return gen;
+};
+Bitboard ChessBoard::wFrontFill(Bitboard wpawns) { return nortFill(wpawns); };
+Bitboard ChessBoard::wRearFill(Bitboard wpawns) { return soutFill(wpawns); };
+Bitboard ChessBoard::bFrontFill(Bitboard bpawns) { return nortFill(bpawns); };
+Bitboard ChessBoard::bRearFill(Bitboard bpawns) { return soutFill(bpawns); };
+Bitboard ChessBoard ::fileFill(Bitboard gen) {
+  return nortFill(gen) & soutFill(gen);
+};
+Bitboard ChessBoard::soutOne(Bitboard b) { return b >> 8; };
+Bitboard ChessBoard::nortOne(Bitboard b) { return b << 8; };
+Bitboard ChessBoard::eastOne(Bitboard b) { return (b << 1) & notAFile; }
+Bitboard ChessBoard::noEaOne(Bitboard b) { return (b << 9) & notAFile; }
+Bitboard ChessBoard::soEaOne(Bitboard b) { return (b >> 7) & notAFile; }
+Bitboard ChessBoard::westOne(Bitboard b) { return (b >> 1) & notHFile; }
+Bitboard ChessBoard::soWeOne(Bitboard b) { return (b >> 9) & notHFile; }
+Bitboard ChessBoard::noWeOne(Bitboard b) { return (b << 7) & notHFile; }
+Bitboard ChessBoard::genShift(Bitboard b, int bits) {
+  return bits > 0 ? (b << bits) : (b >> -bits);
+};
+Bitboard ChessBoard::wSinglePushTargets(Bitboard wpawns, Bitboard empty) {
+  return nortOne(wpawns) & empty;
+};
+Bitboard ChessBoard::wSinglePushTargets() {
+  return wSinglePushTargets(getPawns(White), getEmpty());
+};
+Bitboard ChessBoard::wDblPushTargets(Bitboard wpawns, Bitboard empty) {
+  Bitboard singlePush = wSinglePushTargets(wpawns, empty);
+  return nortOne(singlePush) & empty & rank4;
+};
+
+Bitboard ChessBoard::bSinglePushTargets(Bitboard bpawns, Bitboard empty) {
+  return nortOne(bpawns) & empty;
+};
+Bitboard ChessBoard::bSinglePushTargets() {
+  return bSinglePushTargets(getPawns(Black), getEmpty());
+};
+Bitboard ChessBoard::bDblPushTargets(Bitboard bpawns, Bitboard empty) {
+  Bitboard singlePush = bSinglePushTargets(bpawns, empty);
+  return nortOne(singlePush) & empty & rank4;
+};
+Bitboard ChessBoard::putPiece(Bitboard b, EnumSquare s) {
+  return b | (CBB(1) << s);
+};
+Bitboard ChessBoard::delPiece(Bitboard b, EnumSquare s) {
+  return b ^ (CBB(1) << s);
 };

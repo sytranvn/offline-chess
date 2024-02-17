@@ -29,10 +29,11 @@ if(NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 add_subdirectory(src)
+include_directories(src)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} raylib engine)
 
 # Web Configurations
 if(${PLATFORM} STREQUAL "Web")
@@ -45,4 +46,8 @@ if(APPLE)
   target_link_libraries(${PROJECT_NAME} "-framework IOKit")
   target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
   target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+endif()
+option(BUILD_TEST "Build unittests" ON)
+if(BUILD_TEST)
+  add_subdirectory(tests)
 endif()
