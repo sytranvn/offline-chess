@@ -19,7 +19,6 @@ if(NOT googletest_FOUND) # If there's none, fetch and build googletest
 endif()
 
 include_directories(${chess_SOURCE_DIR})
-enable_testing()
 
 if (APPLE)
   # If we are using the system clang, we need to disable coverage
