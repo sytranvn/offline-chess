@@ -164,11 +164,11 @@ TEST(ChessBoardTest, FrontFill) {
 TEST(ChessBoardTest, FileFill) {
   Bitboard in[8] = {
       CBB(1) << e5,
-      CBB(0),
-      CBB(1) << e5,
+      CBB(1) << d5,
+      (CBB(1) << e5) | (CBB(1) << d5),
       0,
   };
   board = ChessBoard(in);
   Bitboard empty = Bitboard(0);
-  EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(ChessBoard::White)), eFile);
+  EXPECT_EQ_BOARD(board.fileFill(board.getOccupied()), (eFile | dFile));
 }

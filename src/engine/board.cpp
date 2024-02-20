@@ -139,6 +139,7 @@ std::string ChessBoard::fillChar() {
 }
 
 Bitboard ChessBoard::nortFill(Bitboard gen) {
+  // TODO: why does this not shift up to 64?
   gen |= (gen << 8);
   gen |= (gen << 16);
   gen |= (gen << 32);
@@ -155,7 +156,7 @@ Bitboard ChessBoard::wRearFill(Bitboard wpawns) { return soutFill(wpawns); };
 Bitboard ChessBoard::bFrontFill(Bitboard bpawns) { return nortFill(bpawns); };
 Bitboard ChessBoard::bRearFill(Bitboard bpawns) { return soutFill(bpawns); };
 Bitboard ChessBoard ::fileFill(Bitboard gen) {
-  return nortFill(gen) & soutFill(gen);
+  return nortFill(gen) | soutFill(gen);
 };
 Bitboard ChessBoard::soutOne(Bitboard b) { return b >> 8; };
 Bitboard ChessBoard::nortOne(Bitboard b) { return b << 8; };
