@@ -116,11 +116,10 @@ public:
   void fillChar(Bitboard b, char ch, std::string &out);
   std::string toString();
   std::string fillChar();
-  Bitboard wFrontFill(Bitboard wpawns);
-  Bitboard wRearFill(Bitboard wpawns);
-  Bitboard bFrontFill(Bitboard bpawns);
-  Bitboard bRearFill(Bitboard bpawns);
-  Bitboard fileFill(Bitboard gen);
+
+  // =====================================
+  // Bitboard operations
+  // =====================================
   /**
    * @brief to rank 8 direction
    */
@@ -142,6 +141,16 @@ public:
   Bitboard soWeOne(Bitboard b);
   Bitboard noWeOne(Bitboard b);
   Bitboard genShift(Bitboard b, int bits);
+
+  // =====================================
+  // Pawns fills
+  // =====================================
+  Bitboard wFrontFill(Bitboard wpawns);
+  Bitboard wRearFill(Bitboard wpawns);
+  Bitboard bFrontFill(Bitboard bpawns);
+  Bitboard bRearFill(Bitboard bpawns);
+  Bitboard fileFill(Bitboard gen);
+
   /**
    * =====================================
    * Pawn moves
@@ -151,9 +160,21 @@ public:
   Bitboard wSinglePushTargets();
   Bitboard wDblPushTargets(Bitboard wpawns, Bitboard empty);
 
+  Bitboard wPawnsAble2Push(Bitboard b, Bitboard empty);
+  Bitboard wPawnsAble2Push();
+
+  Bitboard wPawnsAble2DblPush(Bitboard b, Bitboard empty);
+  Bitboard wPawnsAble2DblPush();
+
   Bitboard bSinglePushTargets(Bitboard bpawns, Bitboard empty);
   Bitboard bSinglePushTargets();
   Bitboard bDblPushTargets(Bitboard bpawns, Bitboard empty);
+
+  Bitboard bPawnsAble2Push(Bitboard b, Bitboard empty);
+  Bitboard bPawnsAble2Push();
+
+  Bitboard bPawnsAble2DblPush(Bitboard b, Bitboard empty);
+  Bitboard bPawnsAble2DblPush();
 
   Bitboard putPiece(Bitboard b, EnumSquare s);
   Bitboard delPiece(Bitboard b, EnumSquare s);

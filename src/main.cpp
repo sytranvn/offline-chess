@@ -31,6 +31,8 @@ int main() {
   ChessBoard board = ChessBoard();
   std::string v;
 
+  TraceLog(LOG_INFO, "0x7f:\n%s",
+           board.printBitboard(Bitboard(0x7f7f7f7f7f7f7f7f)).c_str());
   TraceLog(LOG_INFO, "Board:\n%s", board.fillChar().c_str());
   return 0;
 }

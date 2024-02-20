@@ -179,6 +179,22 @@ Bitboard ChessBoard::wDblPushTargets(Bitboard wpawns, Bitboard empty) {
   return nortOne(singlePush) & empty & rank4;
 };
 
+Bitboard ChessBoard::wPawnsAble2Push(Bitboard b, Bitboard empty) {
+  // empty squares go opposite direction of white pawns
+  return nortOne(empty) & b;
+};
+Bitboard ChessBoard::wPawnsAble2Push() {
+  return wPawnsAble2Push(getPawns(White), getEmpty());
+};
+
+Bitboard ChessBoard::wPawnsAble2DblPush(Bitboard b, Bitboard empty) {
+  Bitboard emptyRank3 = nortOne(empty & rank4) & empty;
+  return wPawnsAble2Push(b, emptyRank3);
+};
+Bitboard ChessBoard::wPawnsAble2DblPush() {
+  return wPawnsAble2DblPush(getPawns(White), getEmpty());
+};
+
 Bitboard ChessBoard::bSinglePushTargets(Bitboard bpawns, Bitboard empty) {
   return nortOne(bpawns) & empty;
 };
@@ -189,6 +205,23 @@ Bitboard ChessBoard::bDblPushTargets(Bitboard bpawns, Bitboard empty) {
   Bitboard singlePush = bSinglePushTargets(bpawns, empty);
   return nortOne(singlePush) & empty & rank4;
 };
+
+Bitboard ChessBoard::bPawnsAble2Push(Bitboard b, Bitboard empty) {
+  // empty squares go opposite direction of black pawns
+  return soutOne(empty) & b;
+};
+Bitboard ChessBoard::bPawnsAble2Push() {
+  return bPawnsAble2Push(getPawns(Black), getEmpty());
+};
+
+Bitboard ChessBoard::bPawnsAble2DblPush(Bitboard b, Bitboard empty) {
+  Bitboard emptyRank6 = soutOne(empty & rank5) & empty;
+  return bPawnsAble2Push(b, emptyRank6);
+};
+Bitboard ChessBoard::bPawnsAble2DblPush() {
+  return bPawnsAble2DblPush(getPawns(Black), getEmpty());
+};
+
 Bitboard ChessBoard::putPiece(Bitboard b, EnumSquare s) {
   return b | (CBB(1) << s);
 };

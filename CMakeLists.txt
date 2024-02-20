@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.11) # FetchContent is available in 3.11+
+# THIS HAS TO COME BEFORE THE PROJECT LINE
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
+# THIS HAS TO COME BEFORE THE PROJECT LINE
 project(chess CXX)
 
 # Generate compile_commands.json
@@ -42,12 +46,12 @@ if(${PLATFORM} STREQUAL "Web")
 endif()
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
-if(APPLE)
-  target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-  target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-  target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
-endif()
 option(BUILD_TEST "Build unittests" ON)
 if(BUILD_TEST)
   add_subdirectory(tests)
+  if(APPLE)
+    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+  endif()
 endif()

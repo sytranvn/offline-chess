@@ -1,5 +1,4 @@
 set(GOOGLETEST_VERSION 1.14.0)
-set(CMAKE_CXX_FLAGS --coverage)
 find_package(googletest ${GOOGLETEST_VERSION} QUIET) # QUIET or REQUIRED
 if(NOT googletest_FOUND) # If there's none, fetch and build googletest
   include(FetchContent)
@@ -18,8 +17,19 @@ if(NOT googletest_FOUND) # If there's none, fetch and build googletest
     add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
   endif()
 endif()
+
 include_directories(${chess_SOURCE_DIR})
 enable_testing()
+
+if (APPLE)
+  # If we are using the system clang, we need to disable coverage
+  # https://stackoverflow.com/a/31543058/2945428
+  set(GCC_GENERATE_TEST_COVERAGE_FILES NO)
+  set(GCC_INSTRUMENT_PROGRAM_FLOW_ARCS NO)
+else()
+  set(CMAKE_CXX_FLAGS --coverage)
+endif()
+
 file(GLOB TEST_SOURCES "*.cpp")
 add_executable(chess_test ${TEST_SOURCES})
 target_link_libraries(chess_test GTest::gtest_main engine)
