@@ -15,41 +15,29 @@ protected:
 // Board initialization
 // =====================================
 TEST(ChessBoardTest, Bitboard_Initialization) {
-  EXPECT_EQ_BOARD(board.getPawns(ChessBoard::White), rank2);
-  EXPECT_EQ_BOARD(board.getPawns(ChessBoard::Black), rank7);
+  EXPECT_EQ_BOARD(board.getPawns(White), rank2);
+  EXPECT_EQ_BOARD(board.getPawns(Black), rank7);
   EXPECT_EQ_BOARD(board.getOccupied(), Bitboard(0xffff00000000ffff));
 }
 
 TEST(ChessBoardTest, GetPieces) {
-  EXPECT_EQ_BOARD(board.getPawns(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhitePawn));
-  EXPECT_EQ_BOARD(board.getPawns(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackPawn));
+  EXPECT_EQ_BOARD(board.getPawns(White), board.getPieceSet(WhitePawn));
+  EXPECT_EQ_BOARD(board.getPawns(Black), board.getPieceSet(BlackPawn));
 
-  EXPECT_EQ_BOARD(board.getKnights(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhiteKnight));
-  EXPECT_EQ_BOARD(board.getKnights(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackKnight));
+  EXPECT_EQ_BOARD(board.getKnights(White), board.getPieceSet(WhiteKnight));
+  EXPECT_EQ_BOARD(board.getKnights(Black), board.getPieceSet(BlackKnight));
 
-  EXPECT_EQ_BOARD(board.getBishops(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhiteBishop));
-  EXPECT_EQ_BOARD(board.getBishops(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackBishop));
+  EXPECT_EQ_BOARD(board.getBishops(White), board.getPieceSet(WhiteBishop));
+  EXPECT_EQ_BOARD(board.getBishops(Black), board.getPieceSet(BlackBishop));
 
-  EXPECT_EQ_BOARD(board.getRooks(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhiteRook));
-  EXPECT_EQ_BOARD(board.getRooks(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackRook));
+  EXPECT_EQ_BOARD(board.getRooks(White), board.getPieceSet(WhiteRook));
+  EXPECT_EQ_BOARD(board.getRooks(Black), board.getPieceSet(BlackRook));
 
-  EXPECT_EQ_BOARD(board.getQueens(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhiteQueen));
-  EXPECT_EQ_BOARD(board.getQueens(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackQueen));
+  EXPECT_EQ_BOARD(board.getQueens(White), board.getPieceSet(WhiteQueen));
+  EXPECT_EQ_BOARD(board.getQueens(Black), board.getPieceSet(BlackQueen));
 
-  EXPECT_EQ_BOARD(board.getKings(ChessBoard::White),
-                  board.getPieceSet(ChessBoard::WhiteKing));
-  EXPECT_EQ_BOARD(board.getKings(ChessBoard::Black),
-                  board.getPieceSet(ChessBoard::BlackKing));
+  EXPECT_EQ_BOARD(board.getKings(White), board.getPieceSet(WhiteKing));
+  EXPECT_EQ_BOARD(board.getKings(Black), board.getPieceSet(BlackKing));
 }
 
 // =====================================
@@ -135,13 +123,13 @@ TEST(ChessBoardTest, RearFill) {
           board.putPiece(board.putPiece(board.putPiece(empty, e1), e2), e3),
           e4),
       e5);
-  EXPECT_EQ_BOARD(board.wRearFill(board.getPawns(ChessBoard::White)), wfill);
+  EXPECT_EQ_BOARD(board.wRearFill(board.getPawns(White)), wfill);
   auto bfill = board.putPiece(
       board.putPiece(
           board.putPiece(board.putPiece(board.putPiece(empty, d1), d2), d3),
           d4),
       d5);
-  EXPECT_EQ_BOARD(board.bRearFill(board.getPawns(ChessBoard::Black)), bfill);
+  EXPECT_EQ_BOARD(board.bRearFill(board.getPawns(Black)), bfill);
 }
 
 TEST(ChessBoardTest, FrontFill) {
@@ -155,10 +143,10 @@ TEST(ChessBoardTest, FrontFill) {
   Bitboard empty = Bitboard(0);
   auto wfill = board.putPiece(
       board.putPiece(board.putPiece(board.putPiece(empty, e5), e6), e7), e8);
-  EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(ChessBoard::White)), wfill);
+  EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(White)), wfill);
   auto bfill = board.putPiece(
       board.putPiece(board.putPiece(board.putPiece(empty, d5), d6), d7), d8);
-  EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(ChessBoard::Black)), bfill);
+  EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(Black)), bfill);
 }
 
 TEST(ChessBoardTest, FileFill) {

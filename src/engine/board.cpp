@@ -1,5 +1,4 @@
 #include "board.h"
-#include <iostream>
 #include <string>
 
 void ChessBoard::init(Bitboard in[8]) {
@@ -33,14 +32,10 @@ ChessBoard::ChessBoard() {
   init(in);
 };
 
-ChessBoard::PieceType ChessBoard::pieceType(ChessBoard ::PieceCode pt) {
-  return (PieceType)(pt / 2);
-};
-ChessBoard::ColorType ChessBoard::pieceColor(ChessBoard::PieceCode pt) {
-  return (ColorType)(pt % 2);
-};
+PieceType ChessBoard::pieceType(PieceCode pt) { return (PieceType)(pt / 2); };
+ColorType ChessBoard::pieceColor(PieceCode pt) { return (ColorType)(pt % 2); };
 
-Bitboard ChessBoard::getPieceSet(ChessBoard::PieceCode pt) {
+Bitboard ChessBoard::getPieceSet(PieceCode pt) {
   return pieceBb[pieceType(pt)] & pieceBb[pieceColor(pt)];
 };
 Bitboard ChessBoard::getPawns(ColorType ct) {
@@ -232,3 +227,9 @@ Bitboard ChessBoard::putPiece(Bitboard b, EnumSquare s) {
 Bitboard ChessBoard::delPiece(Bitboard b, EnumSquare s) {
   return b ^ (CBB(1) << s);
 };
+
+void ChessBoard::quiteMove(Move *move) {
+  Bitboard fromBB = CBB(1) << move->from;
+  Bitboard toBB = CBB(1) << move->to;
+  pieceBb[move->piece] ^= fromBB;
+}
