@@ -139,13 +139,16 @@ std::string ChessBoard::fillChar() {
 }
 
 Bitboard ChessBoard::nortFill(Bitboard gen) {
-  // TODO: why does this not shift up to 64?
+  // the filled lines will be doubled every time so 3 shifts will fill all 8
+  // ranks
   gen |= (gen << 8);
   gen |= (gen << 16);
   gen |= (gen << 32);
   return gen;
 };
 Bitboard ChessBoard::soutFill(Bitboard gen) {
+  // the filled lines will be doubled every time so 3 shifts will fill all 8
+  // ranks
   gen |= (gen >> 8);
   gen |= (gen >> 16);
   gen |= (gen >> 32);
