@@ -1,4 +1,5 @@
 #include "engine/board.h"
+#include "engine/engine.h"
 #include <gtest/gtest.h>
 
 ChessBoard board;
@@ -147,6 +148,12 @@ TEST(ChessBoardTest, FrontFill) {
   auto bfill = board.putPiece(
       board.putPiece(board.putPiece(board.putPiece(empty, d5), d6), d7), d8);
   EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(Black)), bfill);
+}
+
+TEST(ChessBoardTest, PawnMove) {
+  Move move = {a2, a4, Pawn, White, Empty, White, Empty};
+  board.quiteMove(&move);
+  EXPECT_EQ_BOARD(board.getPawns(White), (rank2));
 }
 
 TEST(ChessBoardTest, FileFill) {

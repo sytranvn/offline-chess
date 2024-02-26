@@ -230,6 +230,20 @@ Bitboard ChessBoard::delPiece(Bitboard b, EnumSquare s) {
 
 void ChessBoard::quiteMove(Move *move) {
   Bitboard fromBB = CBB(1) << move->from;
+  printf("fromBB: %s\n", printBitboard(fromBB).c_str());
   Bitboard toBB = CBB(1) << move->to;
-  pieceBb[move->piece] ^= fromBB;
+  printf("toBB: %s\n", printBitboard(toBB).c_str());
+  Bitboard fromToBB = fromBB ^ toBB;
+  pieceBb[move->piece] ^= fromToBB;
+  pieceBb[move->color] ^= fromToBB;
+}
+
+void ChessBoard::captureMove(Move *move) {
+  Bitboard fromBB = CBB(1) << move->from;
+  Bitboard toBB = CBB(1) << move->to;
+  Bitboard fromToBB = fromBB ^ toBB;
+  pieceBb[move->piece] ^= fromToBB;
+  pieceBb[move->color] ^= fromToBB;
+  pieceBb[move->capturePiece] ^= toBB;
+  pieceBb[move->captureColor] ^= toBB;
 }

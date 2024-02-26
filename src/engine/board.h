@@ -111,6 +111,7 @@ public:
   Bitboard delPiece(Bitboard b, EnumSquare s);
 
   void quiteMove(Move *move);
+  void captureMove(Move *move);
 };
 
 #endif // BOARD_H
