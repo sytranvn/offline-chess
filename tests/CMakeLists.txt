@@ -25,7 +25,6 @@ if (APPLE)
   # https://stackoverflow.com/a/31543058/2945428
   set(GCC_GENERATE_TEST_COVERAGE_FILES NO)
   set(GCC_INSTRUMENT_PROGRAM_FLOW_ARCS NO)
-  set(CMAKE_CXX_FLAGS "-ftest-coverage -fprofile-arcs")
 else()
   set(CMAKE_CXX_FLAGS "--coverage --profile-arcs")
 endif()

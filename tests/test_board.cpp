@@ -2,9 +2,9 @@
 #include "engine/engine.h"
 #include <gtest/gtest.h>
 
-ChessBoard board;
 class ChessBoardTest : public ::testing::Test {
 protected:
+  ChessBoard board;
   void setUp() { board = ChessBoard(); }
 };
 
@@ -15,13 +15,13 @@ protected:
 // =====================================
 // Board initialization
 // =====================================
-TEST(ChessBoardTest, Bitboard_Initialization) {
+TEST_F(ChessBoardTest, Bitboard_Initialization) {
   EXPECT_EQ_BOARD(board.getPawns(White), rank2);
   EXPECT_EQ_BOARD(board.getPawns(Black), rank7);
   EXPECT_EQ_BOARD(board.getOccupied(), Bitboard(0xffff00000000ffff));
 }
 
-TEST(ChessBoardTest, GetPieces) {
+TEST_F(ChessBoardTest, GetPieces) {
   EXPECT_EQ_BOARD(board.getPawns(White), board.getPieceSet(WhitePawn));
   EXPECT_EQ_BOARD(board.getPawns(Black), board.getPieceSet(BlackPawn));
 
@@ -44,7 +44,7 @@ TEST(ChessBoardTest, GetPieces) {
 // =====================================
 // Board movement
 // =====================================
-TEST(ChessBoardTest, NortOne) {
+TEST_F(ChessBoardTest, NortOne) {
   EXPECT_EQ_BOARD(board.nortOne(rank1), rank2);
   EXPECT_EQ_BOARD(board.nortOne(rank2), rank3);
   EXPECT_EQ_BOARD(board.nortOne(rank3), rank4);
@@ -55,7 +55,7 @@ TEST(ChessBoardTest, NortOne) {
   EXPECT_EQ_BOARD(board.nortOne(rank8), 0);
 }
 
-TEST(ChessBoardTest, SoutOne) {
+TEST_F(ChessBoardTest, SoutOne) {
   EXPECT_EQ_BOARD(board.soutOne(rank1), 0);
   EXPECT_EQ_BOARD(board.soutOne(rank2), rank1);
   EXPECT_EQ_BOARD(board.soutOne(rank3), rank2);
@@ -66,7 +66,7 @@ TEST(ChessBoardTest, SoutOne) {
   EXPECT_EQ_BOARD(board.soutOne(rank8), rank7);
 }
 
-TEST(ChessBoardTest, EastOne) {
+TEST_F(ChessBoardTest, EastOne) {
   EXPECT_EQ_BOARD(board.eastOne(aFile), bFile);
   EXPECT_EQ_BOARD(board.eastOne(bFile), cFile);
   EXPECT_EQ_BOARD(board.eastOne(cFile), dFile);
@@ -77,7 +77,7 @@ TEST(ChessBoardTest, EastOne) {
   EXPECT_EQ_BOARD(board.eastOne(hFile), 0);
 }
 
-TEST(ChessBoardTest, WestOne) {
+TEST_F(ChessBoardTest, WestOne) {
   EXPECT_EQ_BOARD(board.westOne(aFile), 0);
   EXPECT_EQ_BOARD(board.westOne(bFile), aFile);
   EXPECT_EQ_BOARD(board.westOne(cFile), bFile);
@@ -87,19 +87,19 @@ TEST(ChessBoardTest, WestOne) {
   EXPECT_EQ_BOARD(board.westOne(gFile), fFile);
   EXPECT_EQ_BOARD(board.westOne(hFile), gFile);
 }
-TEST(ChessBoardTest, NoEastOne) {
+TEST_F(ChessBoardTest, NoEastOne) {
   auto origin = CBB(1) << a1;
   EXPECT_EQ_BOARD(board.noEaOne(origin), board.nortOne(board.eastOne(origin)));
   EXPECT_EQ_BOARD(board.noEaOne(origin), CBB(1) << b2);
   EXPECT_EQ_BOARD(board.noEaOne(h1A8Diag), 0x408102040800000);
 }
-TEST(ChessBoardTest, SoEastOne) {
+TEST_F(ChessBoardTest, SoEastOne) {
   auto origin = CBB(1) << a8;
   EXPECT_EQ_BOARD(board.soEaOne(origin), board.soutOne(board.eastOne(origin)));
   EXPECT_EQ_BOARD(board.soEaOne(origin), CBB(1) << b7);
   EXPECT_EQ_BOARD(board.soEaOne(h1A8Diag), 0x2040810204080);
 }
-TEST(ChessBoardTest, NoWestOne) {
+TEST_F(ChessBoardTest, NoWestOne) {
   auto origin = CBB(1) << h1;
   EXPECT_EQ_BOARD(board.noWeOne(origin), board.nortOne(board.westOne(origin)));
   EXPECT_EQ_BOARD(board.noWeOne(origin), CBB(1) << g2);
@@ -110,7 +110,7 @@ TEST(ChessBoardTest, NoWestOne) {
 // =====================================
 // Pawn fills
 // =====================================
-TEST(ChessBoardTest, RearFill) {
+TEST_F(ChessBoardTest, RearFill) {
   Bitboard in[8] = {
       CBB(1) << e5,
       CBB(1) << d5,
@@ -133,7 +133,7 @@ TEST(ChessBoardTest, RearFill) {
   EXPECT_EQ_BOARD(board.bRearFill(board.getPawns(Black)), bfill);
 }
 
-TEST(ChessBoardTest, FrontFill) {
+TEST_F(ChessBoardTest, FrontFill) {
   Bitboard in[8] = {
       CBB(1) << e5,
       CBB(1) << d5,
@@ -150,13 +150,14 @@ TEST(ChessBoardTest, FrontFill) {
   EXPECT_EQ_BOARD(board.wFrontFill(board.getPawns(Black)), bfill);
 }
 
-TEST(ChessBoardTest, PawnMove) {
+TEST_F(ChessBoardTest, PawnMove) {
   Move move = {a2, a4, Pawn, White, Empty, White, Empty};
   board.quiteMove(&move);
-  EXPECT_EQ_BOARD(board.getPawns(White), (rank2));
+  EXPECT_EQ_BOARD(board.getPawns(White),
+                  (rank2 ^ (CBB(1) << a2) ^ (CBB(1) << a4)));
 }
 
-TEST(ChessBoardTest, FileFill) {
+TEST_F(ChessBoardTest, FileFill) {
   Bitboard in[8] = {
       CBB(1) << e5,
       CBB(1) << d5,
